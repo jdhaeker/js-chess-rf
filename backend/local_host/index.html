@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Real-time Demo</title>
+    <script src="https://cdn.plot.ly/plotly-2.3.1.min.js"></script>
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+  </head>
+  <body>
+    <center>
+      <div id="chart"></div>
+    </center>
+    <script src="ioclient.js"></script>
+    <script type="text/javascript">
+      const pred = "";
+      console.log("STARTING IO CLIENT");
+      const client = new IOClient("http://localhost:5000");
+
+      client.send("initialize");
+
+      client.on("connect", () => {
+        console.log("Connected to Server");
+        client.send("stream", "hi");
+      });
+
+      client.on("data", (...args) => {
+        console.log(args[0]);
+        
+        /// Call a phaser action here (example)
+        document.getElementById("chart").innerHTML = args[0].data;
+      });
+
+      client.on("prediction", (args) => {
+        console.log("PRED: ", args);
+      });
+
+    </script>
+  </body>
+</html>
